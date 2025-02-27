@@ -3,13 +3,19 @@ import React from 'react'
 import './App.css'
 import LoginPage from './Pages/LoginPage'
 import SignupPage from './Pages/SignUpPage'
+import { BrowserRouter,Route, Routes } from "react-router-dom"
+import HomePage from './Pages/HomePage'
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      {/* <LoginPage /> */}
-      <SignupPage />
+      <BrowserRouter>
+        <Routes>
+          <Route path='/login' element={<LoginPage />} />
+          <Route path = '/register' element={<SignupPage />} />
+          <Route path = '/' element = {<HomePage />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }

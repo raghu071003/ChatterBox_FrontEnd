@@ -1,16 +1,20 @@
 import { useState } from 'react';
 import React from 'react';
 import axios from "axios"
+import { useNavigate,Link } from 'react-router-dom';
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit =async(e) => {
     e.preventDefault();
     // console.log('Login attempt with:', { email, password, rememberMe });
     try{
       const response = await axios.post("http://localhost:5000/api/v1/user/login",{ email, password, rememberMe})
+      // console.log(response);
+      
     }catch(err){
       console.log(err);
       
@@ -94,9 +98,9 @@ const LoginPage = () => {
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
-            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
               Sign up
-            </a>
+            </Link>
           </p>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
+import { useNavigate,Link } from 'react-router-dom';
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -40,7 +41,6 @@ const SignupPage = () => {
     }
     
     console.log('Signup attempt with:', formData);
-    // Here you would typically call your registration API
     try {
         const resposne = await axios.post("http://localhost:5000/api/v1/user/register",formData)
     } catch (error) {
@@ -153,9 +153,9 @@ const SignupPage = () => {
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
-            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
               Sign in
-            </a>
+            </Link>
           </p>
         </div>
       </div>
