@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import { useNavigate,Link } from 'react-router-dom';
+import ShinyText from '../animations/ShinyText';
+  
+<ShinyText text="Just some shiny text!" disabled={false} speed={3} className='custom-class' />
 
 const SignupPage = () => {
+  const [success,setSuccess] = useState();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -10,7 +15,7 @@ const SignupPage = () => {
     confirmPassword: '',
     agreeToTerms: false,
   });
-  const [passwordError, setPasswordError] = useState('');
+  const [passwordError, setPasswordError] = useState(''); 
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -40,9 +45,15 @@ const SignupPage = () => {
       return;
     }
     
-    console.log('Signup attempt with:', formData);
+    // console.log('Signup attempt with:', formData);
     try {
         const resposne = await axios.post("http://localhost:5000/api/v1/user/register",formData)
+        console.log(resposne);
+        
+        if(resposne.status === 201){
+
+          navigate("/login")
+        }
     } catch (error) {
         console.log(error);
         
@@ -50,6 +61,7 @@ const SignupPage = () => {
   };
 
   return (
+    
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg">
         <div className="text-center">
@@ -145,7 +157,7 @@ const SignupPage = () => {
               type="submit" 
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Sign up
+              <ShinyText text="Sign up" disabled={false} speed={3} className='custom-class' />
             </button>
           </div>
         </form>

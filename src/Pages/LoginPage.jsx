@@ -12,8 +12,11 @@ const LoginPage = () => {
     e.preventDefault();
     // console.log('Login attempt with:', { email, password, rememberMe });
     try{
-      const response = await axios.post("http://localhost:5000/api/v1/user/login",{ email, password, rememberMe})
+      const response = await axios.post("http://localhost:5000/api/v1/user/login",{ email, password, rememberMe},{withCredentials:true})
       // console.log(response);
+      if(response.status === 200){
+        navigate("/");
+      }
       
     }catch(err){
       console.log(err);
