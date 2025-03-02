@@ -4,6 +4,7 @@ import socket from '../utils/Socket';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 
+
 const HomePage = () => {
   const [activeChat, setActiveChat] = useState(null);
   const [message, setMessage] = useState('');
@@ -38,8 +39,15 @@ const HomePage = () => {
     }
 
     socket.on("receiveMessage", (data) => {
-      setMessages((prev) => [...prev, { sender: { _id: userId }, text: message, isMe: true }]);
-
+      setMessages((prev) => [...prev, { sender: data.senderId, text: data.message, isMe: false }]);
+  
+      // If the message is not from the active chat, increase the unread count
+      if (data.senderId !== activeChat) {
+        setUnreadMessages((prev) => ({
+          ...prev,
+          [data.senderId]: (prev[data.senderId] || 0) + 1,
+        }));
+      }
     });
 
     return () => {
@@ -64,7 +72,7 @@ const HomePage = () => {
     } else {
       setMessages([]);
     }
-  }, [activeChat]);
+  }, [activeChat,messages]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -98,13 +106,13 @@ const HomePage = () => {
             return (
               <div
                 key={chat._id}
-                className={`flex items-center p-4 cursor-pointer hover:bg-gray-50 ${activeChat === otherMember._id ? 'bg-indigo-50' : ''}`}
+                className={`flex p-4 cursor-pointer hover:bg-gray-50 ${activeChat === otherMember._id ? 'bg-indigo-50' : ''}`}
                 onClick={() => setActiveChat(otherMember._id)}
               >
                 <img src={otherMember.profileImg} alt={otherMember.fullName} className="w-12 h-12 rounded-full" />
-                <div className="ml-4 flex-1">
+                <div className="ml-4">
                   <h2 className="font-semibold text-gray-800">{otherMember.fullName}</h2>
-                  <p className="text-xs text-gray-500">Online</p>
+                  <p className="text-xs text-gray-500">{chat.lastMessage.text}</p>
                 </div>
               </div>
             );
@@ -113,7 +121,7 @@ const HomePage = () => {
       </div>
 
       {/* Chat Window */}
-      {activeChatData && (
+      {activeChatData ? (
         <div className="flex-1 flex flex-col">
           <div className="p-4 border-b border-gray-200 bg-white flex items-center">
             <img src={activeChatData.members.find(m => m._id === activeChat)?.profileImg} alt="User Avatar" className="w-10 h-10 rounded-full" />
@@ -136,7 +144,7 @@ const HomePage = () => {
           </div>
 
           {/* Message Input */}
-          <div className="p-4 bg-white border-t border-gray-200">
+          <div className=" p-4 bg-white border-t border-gray-200">
             <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
               <input
                 type="text"
@@ -154,7 +162,10 @@ const HomePage = () => {
             </form>
           </div>
         </div>
-      )}
+      ) : 
+      <div className="flex-1 flex flex-col">
+        Click on a chat to start messaging!
+        </div>}
     </div>
   );
 };

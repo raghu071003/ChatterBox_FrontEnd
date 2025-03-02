@@ -12,6 +12,7 @@ import ProfilePage from './Pages/Profile';
 import Chat from './Pages/Message';
 import ContactsList from './Pages/Contacts';
 import SearchUsers from './Pages/Search';
+import Loading from './Pages/Loading';
 
 function App() {  
   return (
@@ -23,12 +24,10 @@ function App() {
 function AppContent() {
   const { loading,user } = useContext(AuthContext);
 
-  if (loading) return <div>Loading..</div>;
-
   return (
     <BrowserRouter>
       <Navbar />
-      <Routes>
+      {loading ?<Loading /> :<Routes>
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<SignupPage />} />
         <Route path='/' element={user ? <HomePage /> : <LoginPage />} />
@@ -36,7 +35,7 @@ function AppContent() {
         <Route path='/message' element={<Chat />} />
         <Route path='/contacts' element={user ? <ContactsList /> : <LoginPage />} />
         <Route path='/search' element={user ? <SearchUsers /> : <LoginPage />} />
-      </Routes>
+      </Routes>}
     </BrowserRouter>
   );
 }

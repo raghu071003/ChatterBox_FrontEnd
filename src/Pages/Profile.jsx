@@ -1,6 +1,7 @@
 import React, { useContext,useEffect, useState } from 'react';
 import { Camera, Edit2, Save, Clock, Bell, LogOut, Moon, Key, ShieldCheck, MessageSquare } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
+import ProfilePicture from '../Components/ProfilePicture';
 
 const ProfilePage = () => {
   const [editMode, setEditMode] = useState(false);
@@ -10,6 +11,7 @@ const ProfilePage = () => {
     bio: '',
     email: ''
   });
+  const [toggleUpload,setToggleUpload] = useState(false)
   const { user } = useContext(AuthContext);
 
   // Update state when user data is available
@@ -46,6 +48,7 @@ const ProfilePage = () => {
         {/* Profile Header */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           {/* Cover Photo */}
+          {toggleUpload && <ProfilePicture onClose={()=>setToggleUpload(false)}/>}
           <div className="h-48 bg-gradient-to-r from-indigo-500 to-purple-600 relative">
             <button className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors">
               <Camera size={20} className="text-gray-700" />
@@ -61,7 +64,7 @@ const ProfilePage = () => {
                   alt="Profile" 
                   className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-md" 
                 />
-                <button className="absolute bottom-2 right-2 bg-indigo-600 p-2 rounded-full text-white shadow-md hover:bg-indigo-700 transition-colors">
+                <button className="absolute bottom-2 right-2 bg-indigo-600 p-2 rounded-full text-white shadow-md hover:bg-indigo-700 transition-colors" onClick={()=>setToggleUpload(true)}>
                   <Camera size={16} />
                 </button>
               </div>
@@ -91,27 +94,7 @@ const ProfilePage = () => {
           {/* Left Sidebar */}
           <div className="space-y-6">
             {/* Stats Card */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Activity Stats</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-indigo-50 rounded-lg">
-                  <p className="text-2xl font-bold text-indigo-600">247</p>
-                  <p className="text-sm text-gray-600">Messages</p>
-                </div>
-                <div className="text-center p-3 bg-indigo-50 rounded-lg">
-                  <p className="text-2xl font-bold text-indigo-600">15</p>
-                  <p className="text-sm text-gray-600">Groups</p>
-                </div>
-                <div className="text-center p-3 bg-indigo-50 rounded-lg">
-                  <p className="text-2xl font-bold text-indigo-600">42</p>
-                  <p className="text-sm text-gray-600">Contacts</p>
-                </div>
-                <div className="text-center p-3 bg-indigo-50 rounded-lg">
-                  <p className="text-2xl font-bold text-indigo-600">89%</p>
-                  <p className="text-sm text-gray-600">Response</p>
-                </div>
-              </div>
-            </div>
+            
             
             {/* Settings Navigation */}
             <div className="bg-white rounded-xl shadow-md overflow-hidden">

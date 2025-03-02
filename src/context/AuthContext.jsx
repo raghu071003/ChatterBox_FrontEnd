@@ -9,6 +9,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading,setLoading] = useState(false);
+  const [loggedin,setLoggedin] = useState(false);
 
   // Check if user is already logged in (when app loads)
   useEffect(() => {
@@ -24,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       .finally(() => {
         setLoading(false); // Mark loading as false after request completes
       });
-  }, []);
+  }, [loggedin]);
   
   // Login function
   const login = async (email, password, rememberMe) => {
@@ -56,7 +57,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout ,loading}}>
+    <AuthContext.Provider value={{ user, login, logout ,loading,setLoading,setLoggedin,loggedin}}>
       {children}
     </AuthContext.Provider>
   );

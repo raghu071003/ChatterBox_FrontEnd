@@ -1,29 +1,33 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import React from 'react';
 import axios from "axios"
 import { useNavigate,Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-
-  const handleSubmit =async(e) => {
+  const {login,setLoading,setLoggedin} = useContext(AuthContext)
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log('Login attempt with:', { email, password, rememberMe });
-    try{
-      const response = await axios.post("http://localhost:5000/api/v1/user/login",{ email, password, rememberMe},{withCredentials:true})
-      // console.log(response);
-      if(response.status === 200){
+    setLoading(true); // Start loading
+  
+    try {
+      const success = await login(email, password, rememberMe);
+      if (success) {
+        setLoggedin(true);
         navigate("/");
+      } else {
+        console.log("Invalid email or password");
       }
-      
-    }catch(err){
-      console.log(err);
-      
+    } catch (err) {
+      console.error("Login error:", err);
+    } finally {
+      setLoading(false); // Stop loading after request completes
     }
-
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
