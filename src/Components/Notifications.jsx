@@ -3,7 +3,7 @@ import { X, Bell } from "lucide-react";
 
 const NotificationAlert = ({ notifications, onClose }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed top-0 right-0 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white w-96 p-5 rounded-2xl shadow-lg relative">
         <button
           onClick={onClose}

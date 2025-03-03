@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Home, MessageSquare, Users, Bell, Search, Menu, X, User, User2 } from 'lucide-react';
+import { Home, MessageSquare, Users, Bell, Search, Menu, X, User, User2,Gamepad } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-
+import  logo from "../assets/Logo.png"
+ 
 const Navbar = () => {
   
   
@@ -38,8 +39,8 @@ const NavigationBar = ()=> {
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'contacts', label: 'Contacts', icon: Users },
-    { id: 'notifications', label: 'Notifications', icon: Bell, badge: notifications },
-    { id: 'Search', label: 'Search', icon: Search }
+    { id: 'Search', label: 'Search', icon: Search },
+    { id: 'Games', label: 'Games', icon: Gamepad }
   ];
   useEffect(() => {
     if (activeTab === 'home') {
@@ -54,6 +55,9 @@ const NavigationBar = ()=> {
     if(activeTab === 'Search'){
         navigate("/search")
     }
+    if(activeTab === 'Games'){
+        navigate("/play")
+    }
   }, [activeTab]);
   return(
     <>
@@ -62,10 +66,12 @@ const NavigationBar = ()=> {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <div className="flex items-center">
-              <span className={`text-2xl font-bold transition-colors duration-300 
+            <div className=" flex items-center flex-row gap-1">
+            <img src={logo} alt="" width={40}  className=''/>
+              <span className={`  text-2xl font-bold transition-colors duration-300 
                 ${isScrolled ? 'text-indigo-600' : 'text-white'}`}>
-                ChatterBox
+                MewMew
+                
               </span>
             </div>
 
@@ -75,7 +81,7 @@ const NavigationBar = ()=> {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center relative px-3 py-2 rounded-md transition-all duration-200 
+                  className={`flex items-center relative px-3 py-2 rounded-md transition-all duration-200  hover:cursor-pointer
                     ${activeTab === item.id 
                       ? (isScrolled ? 'text-indigo-600 bg-indigo-50' : 'text-white bg-indigo-700') 
                       : (isScrolled ? 'text-gray-600 hover:text-indigo-600' : 'text-indigo-100 hover:text-white')}`}
@@ -100,7 +106,7 @@ const NavigationBar = ()=> {
 
             {/* Profile Button */}
              <div className="hidden md:block">
-              <button className={`flex items-center space-x-2 p-2 rounded-full transition-all duration-200
+              <button className={`flex items-center space-x-2 p-2 rounded-full transition-all duration-200 hover:cursor-pointer
                 ${isScrolled ? 'bg-gray-100 hover:bg-gray-200' : 'bg-indigo-700 hover:bg-indigo-800'}`} onClick={()=>setActiveTab("profile")}>
                 {user ? <img src={user.profileImg} alt="Profile" className="w-8 h-8 rounded-full" /> : <div>Loading</div>}
                 <span className={`transition-colors duration-300 ${isScrolled ? 'text-gray-800' : 'text-white'}`}>

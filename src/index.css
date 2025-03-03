@@ -1,1 +1,10 @@
 @import "tailwindcss";
+.toast-message {
+    background: white;
+    color: oklch(0.511 0.262 276.966);
+    font-size: 20px;
+    width: 34vw;
+    padding: 30px 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow */
+    border-radius: 10px; /* Optional: for rounded corners */
+}

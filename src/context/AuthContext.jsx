@@ -10,7 +10,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading,setLoading] = useState(false);
   const [loggedin,setLoggedin] = useState(false);
-
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
   // Check if user is already logged in (when app loads)
   useEffect(() => {
     axios
@@ -57,7 +58,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout ,loading,setLoading,setLoggedin,loggedin}}>
+    <AuthContext.Provider value={{ user, login, logout ,loading,setLoading,setLoggedin,loggedin,notifications,setNotifications,showNotifications,setShowNotifications}}>
       {children}
     </AuthContext.Provider>
   );

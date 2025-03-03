@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext,useEffect } from 'react';
 import React from 'react';
 import './App.css';
 import LoginPage from './Pages/LoginPage';
@@ -13,6 +13,8 @@ import Chat from './Pages/Message';
 import ContactsList from './Pages/Contacts';
 import SearchUsers from './Pages/Search';
 import Loading from './Pages/Loading';
+import {ToastContainer,toast} from "react-toastify"
+import Games from './Pages/Games';
 
 function App() {  
   return (
@@ -21,12 +23,26 @@ function App() {
     </AuthProvider>
   );
 }
+function Notifi({ notifications }) {
+  useEffect(() => {
+    if (notifications?.length > 0) {
+      notifications.forEach((n) => {
+        toast(n.message, {
+          className: "toast-message",
+        });
+      });
+    }
+  }, [notifications]); // Re-run when notifications change
+
+  return <ToastContainer />;
+}
 function AppContent() {
-  const { loading,user } = useContext(AuthContext);
+  const { loading,user,notifications} = useContext(AuthContext);
 
   return (
     <BrowserRouter>
       <Navbar />
+      <Notifi notifications={notifications}/>
       {loading ?<Loading /> :<Routes>
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<SignupPage />} />
@@ -35,6 +51,8 @@ function AppContent() {
         <Route path='/message' element={<Chat />} />
         <Route path='/contacts' element={user ? <ContactsList /> : <LoginPage />} />
         <Route path='/search' element={user ? <SearchUsers /> : <LoginPage />} />
+        <Route path='/play' element={user ? <Games /> : <LoginPage />} />
+
       </Routes>}
     </BrowserRouter>
   );
