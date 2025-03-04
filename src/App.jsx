@@ -15,6 +15,8 @@ import SearchUsers from './Pages/Search';
 import Loading from './Pages/Loading';
 import {ToastContainer,toast} from "react-toastify"
 import Games from './Pages/Games';
+import ContactsOverlay from './Components/contactsOverlay';
+import RPS from './Pages/RockPaperScissors';
 
 function App() {  
   return (
@@ -52,7 +54,9 @@ function AppContent() {
         <Route path='/contacts' element={user ? <ContactsList /> : <LoginPage />} />
         <Route path='/search' element={user ? <SearchUsers /> : <LoginPage />} />
         <Route path='/play' element={user ? <Games /> : <LoginPage />} />
-
+        <Route path='/play/rps' element={user ? <RPS /> : <LoginPage />} />
+        <Route path='/message/:contactId' element={user ? <HomePage /> : <LoginPage />} />
+        {/* <Route path='/check' element={<ContactsOverlay isOpen={true} onClose={false} />} /> */}
       </Routes>}
     </BrowserRouter>
   );

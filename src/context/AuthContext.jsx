@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import React from "react";
 import axios from "axios";
-
+import socket from "../utils/Socket";
 // Create Context
 export const AuthContext = createContext();
 
@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
       .get("http://localhost:5000/api/v1/user/getUser", { withCredentials: true })
       .then((res) => {
         setUser(res.data.user);
+        socket.emit("join", res.data.user._id);
       })
       .catch((err) => {
         console.error("Error fetching user:", err);

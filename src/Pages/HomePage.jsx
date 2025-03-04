@@ -4,6 +4,7 @@ import socket from "../utils/Socket";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import NotificationAlert from "../Components/Notifications";
+import { useParams } from "react-router-dom";
 
 const HomePage = () => {
   const [activeChat, setActiveChat] = useState(null);
@@ -20,7 +21,13 @@ const HomePage = () => {
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
-
+  const {contactId} = useParams();
+  console.log(contactId);
+  
+  // if(contactId){
+  //   setActiveChat(contactId)
+  // }
+  
   useEffect(() => {
     const getChats = async () => {
       try {
@@ -70,12 +77,25 @@ const HomePage = () => {
     setShouldScrollToBottom(true);
 
     const fetchMessages = async () => {
+      
       try {
-        const response = await axios.post(
-          "http://localhost:5000/api/v1/user/messages",
-          { activeChat, page: 1, limit: 20 },
-          { withCredentials: true }
-        );
+        var response = null;
+        if(contactId){
+          console.log(contactId);
+          
+          response = await axios.post(
+            "http://localhost:5000/api/v1/user/messages",
+            { contactId, page: 1, limit: 20 },
+            { withCredentials: true }
+          );
+        }else{
+          response = await axios.post(
+            "http://localhost:5000/api/v1/user/messages",
+            { activeChat, page: 1, limit: 20 },
+            { withCredentials: true }
+          );
+        }
+         
         setMessages(response.data.messages);
         setHasMore(response.data.messages.length === 20);
         setPage(2);
