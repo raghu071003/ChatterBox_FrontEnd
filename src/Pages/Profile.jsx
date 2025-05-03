@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Camera, Edit2, Save, Clock, Bell, LogOut, Moon, Key, ShieldCheck } from 'lucide-react';
+import { Camera, Edit2, Save, Clock, Bell, LogOut, Moon, Key, ShieldCheck, Cookie } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import ProfilePicture from '../Components/ProfilePicture';
-
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import socket from '../utils/Socket';
 const ProfilePage = () => {
   const [editMode, setEditMode] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -13,7 +15,7 @@ const ProfilePage = () => {
   });
   const [toggleUpload, setToggleUpload] = useState(false);
   const { user } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (user) {
       setProfileData(prevData => ({
@@ -41,11 +43,28 @@ const ProfilePage = () => {
     setFormData({ ...profileData });
     setEditMode(false);
   };
+  const logout = async()=>{
+    
+    try {
+      
+      const res = await axios.post("http://localhost:5000/api/v1/user/logout",{},{withCredentials:true});
+      // console.log(res);
+      
+      if (res.status === 201) {
+
+        socket.emit("disconnectUser")
+    
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error(error);
+      
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Profile Header - Redesigned without cover photo */}
         <div className="bg-white rounded-xl shadow-md">
           {toggleUpload && <ProfilePicture onClose={() => setToggleUpload(false)} />}
           
@@ -217,9 +236,9 @@ const ProfilePage = () => {
                   <Moon size={18} className="text-indigo-600 mr-3" />
                   <span className="text-gray-700">Theme</span>
                 </button>
-                <button className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition-colors">
+                <button onClick={logout} className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition-colors">
                   <LogOut size={18} className="mr-3" />
-                  <span>Logout</span>
+                  <span >Logout</span>
                 </button>
               </div>
             </div>

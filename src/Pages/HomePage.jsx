@@ -25,7 +25,7 @@ const HomePage = () => {
   const messagesContainerRef = useRef(null);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
   const { contactId } = useParams();
-
+  const [onlineUsers, setOnlineUsers] = useState([]);
   // Check if screen is mobile size
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -34,7 +34,7 @@ const HomePage = () => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      
+
       // On mobile, hide sidebar when chat is active
       if (mobile && activeChat) {
         setShowSidebar(false);
@@ -67,6 +67,19 @@ const HomePage = () => {
     };
     getChats();
   }, []);
+  useEffect(() => {
+
+    // Listen for the 'update-online-users' event to update the list of online users
+    socket.on('update-online-users', (users) => {
+      setOnlineUsers(users);
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      socket.off('update-online-users'); // Remove the event listener
+    };
+  }, [onlineUsers]);
+  // console.log(onlineUsers);
 
   useEffect(() => {
     if (!userId) return;
@@ -272,7 +285,7 @@ const HomePage = () => {
   const handleChatClick = (chatId) => {
     setActiveChat(chatId);
     setUnreadMessages((prev) => ({ ...prev, [chatId]: 0 }));
-    
+
     // On mobile, hide the sidebar when a chat is selected
     if (isMobile) {
       setShowSidebar(false);
@@ -302,6 +315,12 @@ const HomePage = () => {
           <div className="overflow-y-auto flex-1">
             {chats.map((chat) => {
               const otherMember = chat.members.find((member) => member._id !== userId);
+              console.log("Checking for online status for:", otherMember._id); // Debugging log
+              console.log("Online Users:", onlineUsers.map((m) => m)); // Debugging log
+
+              const isOnline = onlineUsers.some((m) => String(m) === String(otherMember._id));
+              console.log("Is online:", isOnline); // Debugging log
+
               return (
                 <div
                   key={chat._id}
@@ -309,6 +328,7 @@ const HomePage = () => {
                   onClick={() => handleChatClick(otherMember._id)}
                 >
                   <div className="relative">
+                    {isOnline && <span className=" absolute top-0 left-0 bg-green-400 w-3 h-3 rounded-4xl"></span>}
                     <img src={otherMember.profileImg} alt={otherMember.fullName} className="w-12 h-12 rounded-full" />
                     {unreadMessages[otherMember._id] > 0 && (
                       <span className="absolute top-0 ml-2 bg-indigo-600 text-white text-xs px-2 py-1 rounded-full">
@@ -330,10 +350,10 @@ const HomePage = () => {
       {/* Chat Window */}
       {(activeChatData && (!isMobile || !showSidebar)) ? (
         <div className="flex-1 flex flex-col">
-          <div className="p-4 border-b border-gray-200 bg-white flex items-center">
+          <div className="p-4 border-b border-gray-200 bg-white flex items-center fixed top-10 left-0 w-full">
             {isMobile && (
-              <button 
-                onClick={handleBackToChats} 
+              <button
+                onClick={handleBackToChats}
                 className="mr-3 p-1 text-indigo-600 hover:bg-gray-100 rounded-full"
               >
                 <ArrowLeft size={24} />
@@ -369,9 +389,8 @@ const HomePage = () => {
               {messages.map((msg, index) => (
                 <div key={index} className={`flex ${msg.sender._id === userId ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`max-w-xs lg:max-w-md rounded-lg p-3 ${
-                      msg.sender._id === userId ? "bg-indigo-600 text-white" : "bg-white border border-gray-200"
-                    }`}
+                    className={`max-w-xs lg:max-w-md rounded-lg p-3 ${msg.sender._id === userId ? "bg-indigo-600 text-white" : "bg-white border border-gray-200"
+                      }`}
                   >
                     <p className="text-sm">{msg.text}</p>
                   </div>

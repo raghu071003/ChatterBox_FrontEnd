@@ -14,6 +14,8 @@ const SearchUsers = ({ userId }) => {
         setLoading(true);
         try {
             const res = await axios.get(`http://localhost:5000/api/v1/user/search?query=${query}`);
+            const ContactsRes = await axios.get("http://localhost:5000/api/v1/user/getContacts", { withCredentials: true });
+            setAddedContacts(ContactsRes.data.contacts)
             setUsers(res.data);
         } catch (error) {
             console.error("Error fetching users:", error);
